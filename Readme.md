@@ -59,3 +59,8 @@ sheetHelpers would contain functions that can be used by alfredHelpers.
 
 The dependency should be maintained in the above order to prevent circular dependencies.
 (upper module can import from lower module). For the other way around, you'll need to pass as a parameter to the function
+
+#### A few things to note
+
+- Google Sheets data is to be used only to induct existing people into the system and to check if the slot is already booked. It need not be updated if any name change happens.
+- While checking if a slot is available, both google sheets and timesheet needs to be checked, atleast till all users are onboarded.

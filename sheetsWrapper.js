@@ -523,9 +523,15 @@ function getSheetContent(sheetHandler){
                 reject(err);
                 return;
             } 
-            const rows = res.data.values;
             resolve(res.data);
           });
     })
 }
-module.exports={getSheetsHandler,getSheetContent};
+
+function updateSheet(updatedCells){
+  updatedCells.map((update)=>{
+    console.log(`[SHEETS] Updated ${update.cell} to ${update.value}`);
+  })
+}
+
+module.exports={getSheetsHandler,getSheetContent,updateSheet};

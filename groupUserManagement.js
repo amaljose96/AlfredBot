@@ -11,12 +11,12 @@ function checkIfNewUserWasAdded(action) {
   return action.type === "new_users_added" && action.group.id === updatesGroup;
 }
 
-function handleNewUserAdd(action, users, timesheet) {
+function handleNewUserAdd(action, users, timesheet,googleSheet) {
   let { addedUsers, group } = action;
   addedUsers.forEach((addedUser) => {
-    //Check if user is in users list.
+    //Check if user is in users list. If not
     if (users[addedUser.id]) {
-      checkAndUpdateTimesheetForNewUser(addedUser);
+      checkAndUpdateTimesheetForNewUser(addedUser,users,timesheet,googleSheet);
     }
     else{
         informTheAdmins(getUserName(addedUser)+" was kicked for not choosing timeslot");
@@ -25,12 +25,12 @@ function handleNewUserAdd(action, users, timesheet) {
   });
 }
 
-function userManagementPipeline(action, users, timesheet) {
+function groupUserManagementPipeline(action, users, timesheet) {
   if (checkIfNewUserWasAdded(action)) {
     handleNewUserAdd(action, users, timesheet);
   }
 }
 
 module.exports = {
-  userManagementPipeline,
+  groupUserManagementPipeline,
 };

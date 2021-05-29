@@ -1,15 +1,17 @@
 const { default: axios } = require("axios");
 const { printAction } = require("./telegramHelpers");
 const fs = require("fs");
-const { userManagementPipeline } = require("./groupUserManagement");
+const { groupUserManagementPipeline } = require("./groupUserManagement");
+const { userManagementPipeline } = require("./userManagementPipeline.js");
 const { mainConversationPipeline } = require("./conversationPipeline");
 const botToken = process.env.BOTTOKEN;
 let lastUpdate = "";
 let users = {};
 let timeSheet = {};
+let googleSheet = {};
 const { loadTimeSheet } = require("./alfredHelpers");
-const SlotBot = require('./slotbot');
 
+const SlotBot = require('./slotbot');
 const { getSheetsHandler, getSheetContent } = require("./sheetsWrapper");
 
 function poller() {
@@ -121,8 +123,9 @@ function inferAction(update) {
 
 function processUpdate(update) {
   let action = inferAction(update);
-  userManagementPipeline(action, users, timeSheet);
+  groupUserManagementPipeline(action, users, timeSheet);
   mainConversationPipeline(action, users, timeSheet);
+  userManagementPipeline(action,users,timeSheet,googleSheet);
   printAction(action);
 }
 
@@ -140,13 +143,12 @@ function loadData(filename) {
 }
 
 function syncCache(){
-  console.log("Writing cache");
-  fs.writeFile("users.json",JSON.stringify(users),(err)=>{
+  fs.writeFile("users.json",JSON.stringify(users,null,4),(err)=>{
     if(err){
       console.log(err);
     }
   });
-  fs.writeFile("timesheet.json",JSON.stringify(timeSheet),(err)=>{
+  fs.writeFile("timesheet.json",JSON.stringify(timeSheet,null,4),(err)=>{
     if(err){
       console.log(err);
     }
@@ -158,16 +160,19 @@ function startUp() {
   Promise.all([
     loadData("users.json").catch(() => {}),
     loadData("timesheet.json").catch(() => {}),
-  ]).then((usersRead, timeSheetRead) => {
+  ]).then(([usersRead,timeSheetRead]) => {
     users = usersRead ? usersRead : {};
-    timeSheet = timeSheetRead ? usersRead : {};
+    timeSheet = timeSheetRead ? timeSheetRead : {};
     console.log("Loaded users and timesheet");
     setInterval(()=>{
       syncCache()
-    },10000);
+    },2000);
     setInterval(() => {
       poller();
     }, 2000);
+    loadTimeSheet().then(retrievedSheet=>{
+      googleSheet=retrievedSheet;
+    })
         
     /**
      * Hey Raman, can we use the timesheet from json for comparison?
@@ -175,11 +180,11 @@ function startUp() {
      * We can use the loadTimeSheet function for now, for the dummy data
      * We'll use the sheets api for updating the cells
      */
-    loadTimeSheet().then((timeSheet) => {
-      new SlotBot(timeSheet).startBot();
-    }).catch(err => {
-      console.log(err);
-    });
+    // loadTimeSheet().then((timeSheet) => {
+    //   new SlotBot(timeSheet).startBot();
+    // }).catch(err => {
+    //   console.log(err);
+    // });
 
 
   });
