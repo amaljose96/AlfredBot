@@ -7,12 +7,16 @@ const botToken = process.env.BOTTOKEN;
 let lastUpdate = "";
 let users = {};
 let timeSheet = {};
+const { loadTimeSheet } = require("./alfredHelpers");
+const SlotBot = require('./slotbot');
+
+let lastUpdate = "";
+const { getSheetsHandler, getSheetContent } = require("./sheetsWrapper");
 
 function poller() {
   axios
     .get(
-      `https://api.telegram.org/${botToken}/getUpdates?limit=10${
-        lastUpdate != "" ? "&offset=" + lastUpdate : ""
+      `https://api.telegram.org/${botToken}/getUpdates?limit=10${lastUpdate != "" ? "&offset=" + lastUpdate : ""
       }`
     )
     .then((response) => {
@@ -113,6 +117,9 @@ function inferAction(update) {
   return { type: "unknown", update };
 }
 
+
+
+
 function processUpdate(update) {
   let action = inferAction(update);
   userManagementPipeline(action, users, timeSheet);
@@ -162,3 +169,16 @@ function startUp() {
 }
 
 startUp();
+
+// console.log("Alfred here. My token is",botToken)
+// setInterval(() => {
+//   poller();
+// }, 2000);
+
+
+loadTimeSheet().then((timeSheet) => {
+  new SlotBot(timeSheet).startBot();
+}).catch(err => {
+  console.log(err);
+});
+
