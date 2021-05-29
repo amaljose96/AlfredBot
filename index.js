@@ -1,6 +1,6 @@
 const { default: axios } = require("axios");
 const { loadTimeSheet } = require("./alfredHelpers");
-const botToken = "bot1811641838:AAFCSJ1pwac3EczAY63-dPdbwpl0RcgzWeI";
+const botToken = "<token>";
 let lastUpdate = "";
 const {getSheetsHandler, getSheetContent} = require("./sheetsWrapper");
 
