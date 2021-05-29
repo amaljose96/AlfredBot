@@ -123,9 +123,9 @@ function inferAction(update) {
 
 function processUpdate(update) {
   let action = inferAction(update);
+  userManagementPipeline(action,users,timeSheet,googleSheet);
   groupUserManagementPipeline(action, users, timeSheet);
   mainConversationPipeline(action, users, timeSheet);
-  userManagementPipeline(action,users,timeSheet,googleSheet);
   printAction(action);
 }
 
