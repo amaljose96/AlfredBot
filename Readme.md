@@ -7,7 +7,7 @@ This telegram bot can manage a 15 minute visa slot checking group on its own.
 ### 1. User Interface (Involves conversation)
 
 People can say Hi to the bot 
-`
+```
 U: Hi
 A: Welcome. Please enter the time you'd like to check:
 U: 12:30PM (we'll need to parse this properly)
@@ -20,7 +20,7 @@ A: Which consulate?
 U: Mumbai
 A (checks, adds to CSV, adds person to group, updates time sheet)
 A: You have been added to the group. Do go through the pinned messages. Check @f1junejulydiscussions for doubts.
-`
+```
 
 #### Subtasks:
 - Maintain conversation (welcome, next question, back, cancel, what's my time slot)
