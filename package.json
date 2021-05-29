@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
-    "googleapis": "^39.2.0"
+    "googleapis": "^39.2.0",
+    "telegraf": "^4.3.0"
   }
 }

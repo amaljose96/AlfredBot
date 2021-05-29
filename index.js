@@ -1,11 +1,12 @@
 const { default: axios } = require("axios");
-const { loadTimeSheet } = require("./alfredHelpers");
-const botToken = "<token>";
+const {printAction}  = require("./telegramHelpers");
+const {userManagementPipeline} = require("./groupUserManagement")
+const botToken = "bot1811641838:AAFCSJ1pwac3EczAY63-dPdbwpl0RcgzWeI";
 let lastUpdate = "";
-const {getSheetsHandler, getSheetContent} = require("./sheetsWrapper");
+let users={};
+let timeSheet = {};
 
 function poller() {
-  // console.log(`[POLLER] ${lastUpdate}`)
   axios
     .get(
       `https://api.telegram.org/${botToken}/getUpdates?limit=10${
@@ -64,6 +65,15 @@ function inferAction(update) {
     let group = update["message"].chat;
     let time = update["message"].date;
     base = { ...base, by, group, time };
+    if(update["message"].new_chat_member){
+      if(update["message"].new_chat_member.id === by.id){
+        return {
+          type: "new_user_joined",
+          ...base,
+          user: update["message"].new_chat_member,
+        }
+      }
+    }
     if (update["message"].new_chat_members) {
       return {
         type: "new_users_added",
@@ -101,57 +111,15 @@ function inferAction(update) {
   return { type: "unknown", update };
 }
 
-function getGroupText(group) {
-  return `${group.title}(@${group.username ? group.username : "private"})`;
-}
-function getUserText(user) {
-  return `${user.first_name}(${user.id})`;
-}
 
-function printAction(action) {
-  let log = ``;
-  switch (action.type) {
-    case "user_promoted":
-      log = `${getUserText(action.user)} was promoted`;
-      break;
-    case "unknown_user_update":
-      log = `Unknown User Update. ${JSON.stringify(action)}`;
-      break;
-    case "unknown_different_user_update":
-      log = `Unknown User Update. ${JSON.stringify(action)}`;
-      break;
-    case "new_users_added":
-      log = `[${getGroupText(action.group)}] ${getUserText(
-        action.by
-      )} added ${action.users.map(getUserText).join(", ")}`;
-      break;
-    case "message":
-      log = `[${getGroupText(action.group)}] ${getUserText(action.by)} : ${
-        action.text
-      }`;
-      break;
-    case "unknown_message":
-      break;
-    case "pinned_message":
-    case "photo":
-      break;
-    default:
-      log = "";
-      break;
-  }
-  if (log !== ``) {
-    console.log(`[${action.time}] ${log}`);
-  }
-}
 
 function processUpdate(update) {
   let action = inferAction(update);
+  userManagementPipeline(action,users,timeSheet);
   printAction(action);
 }
 
-// setInterval(() => {
-//   poller();
-// }, 2000);
+setInterval(() => {
+  poller();
+}, 2000);
 
-
-loadTimeSheet();
