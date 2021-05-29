@@ -6,7 +6,8 @@ function processGroupAction(group,user,decision)
 {
     switch(decision){
         case "safe":return;
-        case "kick":console.log("User needs to be kicked.");
+        case "kick":console.log("User needs to be kicked.");break;
+        case "add":console.log("User will be added");break;
         default:console.log("What do you mean by "+decision);
     }
 }
@@ -26,7 +27,7 @@ function sendMessage(chatId,message){
     console.log("[TELEGRAM] "+message);
     return axios
       .get(
-        `https://api.telegram.org/${botAccessToken}/sendMessage?chat_id=${chatId}&parse_mode=html&text=${message}`
+        `https://api.telegram.org/bot${botAccessToken}/sendMessage?chat_id=${chatId}&parse_mode=html&text=${message}`
       )
       .then((response) => {
         console.log(
@@ -38,6 +39,7 @@ function sendMessage(chatId,message){
         console.log("[TELEGRAM] Error : ", err);
       });
 }
+
 
 
 function printAction(action) {

@@ -10,14 +10,6 @@ function handlePersonalMessage(action, users, timesheet) {
   informTheAdmins(getUserName(action.by) + " is texting me : " + action.text);
 }
 function checkIfGroupUpdate(action) {
-  console.log(
-    "Checking if group message",
-    action.group,
-    "Updates : ",
-    updateGroupId,
-    " Match=",
-    action.group.id === updateGroupId
-  );
   return action.type === "message" && action.group.id === updateGroupId;
 }
 function handleGroupUpdate(action, users, timesheet) {

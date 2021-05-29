@@ -11,6 +11,7 @@ const locations = {
 };
 
 function loadTimeSheet() {
+  let timeSheet = {};
   return getSheetsHandler().then((sheetHandler) => {
     return getSheetContent(sheetHandler).then((data) => {
       let pointerTime = new Date();
@@ -58,3 +59,27 @@ module.exports = {
   checkAndUpdateTimesheetForNewUser,
   informTheAdmins
 }
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Polyfill since Im using an old version od Node -Amal
+ */
+ if (!Object.entries)
+ Object.entries = function( obj ){
+    var ownProps = Object.keys( obj ),
+       i = ownProps.length,
+       resArray = new Array(i); // preallocate the Array
+
+    while (i--)
+       resArray[i] = [ownProps[i], obj[ownProps[i]]];
+    return resArray;
+ };

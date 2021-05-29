@@ -10,13 +10,12 @@ let timeSheet = {};
 const { loadTimeSheet } = require("./alfredHelpers");
 const SlotBot = require('./slotbot');
 
-let lastUpdate = "";
 const { getSheetsHandler, getSheetContent } = require("./sheetsWrapper");
 
 function poller() {
   axios
     .get(
-      `https://api.telegram.org/${botToken}/getUpdates?limit=10${lastUpdate != "" ? "&offset=" + lastUpdate : ""
+      `https://api.telegram.org/bot${botToken}/getUpdates?limit=10${lastUpdate != "" ? "&offset=" + lastUpdate : ""
       }`
     )
     .then((response) => {
@@ -165,20 +164,21 @@ function startUp() {
     setInterval(() => {
       poller();
     }, 2000);
+        
+    /**
+     * Hey Raman, can we use the timesheet from json for comparison?
+     * The loadTimeSheet wont be needed since the timesheet json would be the source of data
+     * We can use the loadTimeSheet function for now, for the dummy data
+     * We'll use the sheets api for updating the cells
+     */
+    // loadTimeSheet().then((timeSheet) => {
+    //   new SlotBot(timeSheet).startBot();
+    // }).catch(err => {
+    //   console.log(err);
+    // });
+
+
   });
 }
 
 startUp();
-
-// console.log("Alfred here. My token is",botToken)
-// setInterval(() => {
-//   poller();
-// }, 2000);
-
-
-loadTimeSheet().then((timeSheet) => {
-  new SlotBot(timeSheet).startBot();
-}).catch(err => {
-  console.log(err);
-});
-

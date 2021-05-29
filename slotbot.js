@@ -4,10 +4,10 @@ const { Telegraf, Markup, Scenes, session } = require('telegraf');
 
 
 class SlotBot {
-
-    BOT_TOKEN = process.env.BOTTOKEN;
+   
     constructor(timeSheet) {
         this.timeSheet = timeSheet;
+        this.BOT_TOKEN= process.env.BOTTOKEN;
         this.bot = new Telegraf(this.BOT_TOKEN)
         this.initializeScene();
         const stage = new Scenes.Stage([this.addToGroupScene], { default: "add_to_group" }); // Scene registration
