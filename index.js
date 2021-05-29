@@ -5,12 +5,16 @@ const botToken = process.env.BOTTOKEN;
 let lastUpdate = "";
 let users={};
 let timeSheet = {};
+const { loadTimeSheet } = require("./alfredHelpers");
+const SlotBot = require('./slotbot');
+
+let lastUpdate = "";
+const { getSheetsHandler, getSheetContent } = require("./sheetsWrapper");
 
 function poller() {
   axios
     .get(
-      `https://api.telegram.org/${botToken}/getUpdates?limit=10${
-        lastUpdate != "" ? "&offset=" + lastUpdate : ""
+      `https://api.telegram.org/${botToken}/getUpdates?limit=10${lastUpdate != "" ? "&offset=" + lastUpdate : ""
       }`
     )
     .then((response) => {
@@ -112,6 +116,40 @@ function inferAction(update) {
 }
 
 
+function printAction(action) {
+  let log = ``;
+  switch (action.type) {
+    case "user_promoted":
+      log = `${getUserText(action.user)} was promoted`;
+      break;
+    case "unknown_user_update":
+      log = `Unknown User Update. ${JSON.stringify(action)}`;
+      break;
+    case "unknown_different_user_update":
+      log = `Unknown User Update. ${JSON.stringify(action)}`;
+      break;
+    case "new_users_added":
+      log = `[${getGroupText(action.group)}] ${getUserText(
+        action.by
+      )} added ${action.users.map(getUserText).join(", ")}`;
+      break;
+    case "message":
+      log = `[${getGroupText(action.group)}] ${getUserText(action.by)} : ${action.text
+        }`;
+      break;
+    case "unknown_message":
+      break;
+    case "pinned_message":
+    case "photo":
+      break;
+    default:
+      log = "";
+      break;
+  }
+  if (log !== ``) {
+    console.log(`[${action.time}] ${log}`);
+  }
+}
 
 function processUpdate(update) {
   let action = inferAction(update);
@@ -128,4 +166,10 @@ setInterval(() => {
   poller();
 }, 2000);
 
+
+loadTimeSheet().then((timeSheet) => {
+  new SlotBot(timeSheet).startBot();
+}).catch(err => {
+  console.log(err);
+});
 
