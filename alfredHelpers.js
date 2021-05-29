@@ -1,4 +1,4 @@
-const {getSheetsHandler,getSheetContent} = require("./sheetsWrapper");
+const { getSheetsHandler, getSheetContent } = require("./sheetsWrapper");
 const { sendMessage } = require("./telegramHelpers");
 
 const locations = {
@@ -8,6 +8,8 @@ const locations = {
   H: "Hyderabad",
   C: "Chennai",
 };
+
+let timeSheet = {};
 
 
 function loadTimeSheet() {
@@ -44,18 +46,18 @@ function checkWhoHasToUpdateNow() {
   return timeSheet[checkerTime];
 }
 
-function checkAndUpdateTimesheetForNewUser(){
+function checkAndUpdateTimesheetForNewUser() {
 
 }
 
-function informTheAdmins(message){
-    const adminGroup="-552504204";
-    sendMessage(adminGroup,message);
+function informTheAdmins(message) {
+  const adminGroup = "-552504204";
+  sendMessage(adminGroup, message);
 }
 
 module.exports = {
-    loadTimeSheet,
-    checkWhoHasToUpdateNow,
-    checkAndUpdateTimesheetForNewUser,
-    informTheAdmins
+  loadTimeSheet,
+  checkWhoHasToUpdateNow,
+  checkAndUpdateTimesheetForNewUser,
+  informTheAdmins
 }

@@ -5,7 +5,7 @@ const { Telegraf, Markup, Scenes, session } = require('telegraf');
 
 class SlotBot {
 
-    BOT_TOKEN = "TOKEN_SHOLD_GO_HERE";
+    BOT_TOKEN = "1721823782:AAGdUtmEVE6aeJ76PUwK5OplF1id7GWQm_8";
     constructor(timeSheet) {
         this.timeSheet = timeSheet;
         this.bot = new Telegraf(this.BOT_TOKEN)
@@ -36,7 +36,7 @@ class SlotBot {
 
 
     askConsulateDetails(ctx) {
-        ctx.reply(`Please select the consulate
+        ctx.reply(`Which consulate would you like to check?
       1. H (Hyderabad)
       2. M (Mumbai)
       3. C (Chennai)
@@ -56,7 +56,7 @@ class SlotBot {
             ctx => {
                 if (ctx.callbackQuery && ctx.callbackQuery.data == 'ADD_TO_GROUP') {
                     ctx.reply(`
-                Step1: Enter a time slot. Example: 10:00`);
+                Welcome, Please enter the time you'd like to check. Example: 10:00`);
                     return ctx.wizard.next();
                 } else {
                     this.showMessage(ctx);
@@ -82,11 +82,12 @@ class SlotBot {
                 if (consulate.length == 1 && (consulate == 'h' || consulate == 'm' || consulate == 'c' || consulate == 'd' || consulate == 'k')) {
                     if (this.timeSheet && this.timeSheet[timeslot] && !this.timeSheet[timeslot][consulate.toUpperCase()]) {
                         // Make a call to the Google Sheet API to save the user details
-                        saveUser();
+                        this.saveUser();
                         ctx.reply('Welcome to the group! 👍')
                     } else {
-                        ctx.reply(`Slot is already being checked by a peer. Please check the sheet to find an available slot.
+                        ctx.reply(`Sorry ${timeslot} is not free. Please check the sheet.
                       `);
+                    return ctx.wizard.selectStep(1);
                     }
                 } else {
                     ctx.reply('Please enter valid Consulate Ex: H');

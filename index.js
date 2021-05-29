@@ -2,7 +2,6 @@ const { default: axios } = require("axios");
 const {printAction}  = require("./telegramHelpers");
 const {userManagementPipeline} = require("./groupUserManagement")
 const botToken = process.env.BOTTOKEN;
-let lastUpdate = "";
 let users={};
 let timeSheet = {};
 const { loadTimeSheet } = require("./alfredHelpers");
@@ -116,40 +115,7 @@ function inferAction(update) {
 }
 
 
-function printAction(action) {
-  let log = ``;
-  switch (action.type) {
-    case "user_promoted":
-      log = `${getUserText(action.user)} was promoted`;
-      break;
-    case "unknown_user_update":
-      log = `Unknown User Update. ${JSON.stringify(action)}`;
-      break;
-    case "unknown_different_user_update":
-      log = `Unknown User Update. ${JSON.stringify(action)}`;
-      break;
-    case "new_users_added":
-      log = `[${getGroupText(action.group)}] ${getUserText(
-        action.by
-      )} added ${action.users.map(getUserText).join(", ")}`;
-      break;
-    case "message":
-      log = `[${getGroupText(action.group)}] ${getUserText(action.by)} : ${action.text
-        }`;
-      break;
-    case "unknown_message":
-      break;
-    case "pinned_message":
-    case "photo":
-      break;
-    default:
-      log = "";
-      break;
-  }
-  if (log !== ``) {
-    console.log(`[${action.time}] ${log}`);
-  }
-}
+
 
 function processUpdate(update) {
   let action = inferAction(update);
@@ -161,10 +127,10 @@ function processUpdate(update) {
 
 
 
-console.log("Alfred here. My token is",botToken)
-setInterval(() => {
-  poller();
-}, 2000);
+// console.log("Alfred here. My token is",botToken)
+// setInterval(() => {
+//   poller();
+// }, 2000);
 
 
 loadTimeSheet().then((timeSheet) => {
