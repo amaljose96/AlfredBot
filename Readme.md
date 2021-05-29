@@ -7,6 +7,7 @@ This telegram bot can manage a 15 minute visa slot checking group on its own.
 ### 1. User Interface (Involves conversation)
 
 People can say Hi to the bot 
+`
 U: Hi
 A: Welcome. Please enter the time you'd like to check:
 U: 12:30PM (we'll need to parse this properly)
@@ -19,13 +20,14 @@ A: Which consulate?
 U: Mumbai
 A (checks, adds to CSV, adds person to group, updates time sheet)
 A: You have been added to the group. Do go through the pinned messages. Check @f1junejulydiscussions for doubts.
+`
 
 #### Subtasks:
-A. Maintain conversation (welcome, next question, back, cancel, what's my time slot)
-B. Parsing input (parsing time and consulate and check if valid)
-C. Checking if slot exists (from parsed input check with timesheet CSV if slot is free)
-D. Updating CSV, Group and time sheet (update users CSV, timesheet CSV, add user to group [to be explored], update Google sheet with new user's name)
-E. Current status: User can know what his timeslot is and how many misses are left
+- Maintain conversation (welcome, next question, back, cancel, what's my time slot)
+- Parsing input (parsing time and consulate and check if valid)
+- Checking if slot exists (from parsed input check with timesheet CSV if slot is free)
+- Updating CSV, Group and time sheet (update users CSV, timesheet CSV, add user to group [to be explored], update Google sheet with new user's name)
+- Current status: User can know what his timeslot is and how many misses are left
 
 ### 2. Management
 
@@ -36,11 +38,11 @@ Once 5 chances are exhausted, the bot would remove them from the group
 Apart from this, bot checks if the people in the group and timesheet are same. If any extra people, kick. If anyone leaves, update timesheet
 
 #### Subtasks:
-A. Sync between User details CSV and sheet in case user name changes
-B. If someone's added, check if name in user details CSV else kick
-C. If someone leaves, update timesheet CSV and Google sheet as empty and remove from user details CSV
-D. Check if people are posting in their interval. Reduce score if not
-E. If score is 0, kick out of group
+- Sync between User details CSV and sheet in case user name changes
+- If someone's added, check if name in user details CSV else kick
+- If someone leaves, update timesheet CSV and Google sheet as empty and remove from user details CSV
+- Check if people are posting in their interval; Reduce score if not
+- If score is 0, kick out of group
 
 ## Code structure
 

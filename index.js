@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 const {printAction}  = require("./telegramHelpers");
 const {userManagementPipeline} = require("./groupUserManagement")
-const botToken = "bot1811641838:AAFCSJ1pwac3EczAY63-dPdbwpl0RcgzWeI";
+const botToken = process.env.BOTTOKEN;
 let lastUpdate = "";
 let users={};
 let timeSheet = {};
@@ -119,7 +119,13 @@ function processUpdate(update) {
   printAction(action);
 }
 
+
+
+
+
+console.log("Alfred here. My token is",botToken)
 setInterval(() => {
   poller();
 }, 2000);
+
 

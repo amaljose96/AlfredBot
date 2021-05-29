@@ -1,4 +1,4 @@
-const botAccessToken = process.env.bottoken;
+const botAccessToken = process.env.BOTTOKEN;
 
 function processGroupAction(group,user,decision)
 {
