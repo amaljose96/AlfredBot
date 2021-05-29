@@ -56,11 +56,6 @@ function userManagementPipeline(action, users, timeSheet, googleSheet) {
     if(isFirstNameChanged || isLastNameChanged){
         updateGoogleSheetForUser(users[user.id]);
     }
-    if (user.score < 0) {
-      informTheAdmins(
-        getUserName(user) + " is still in the group with a negative score."
-      );
-    }
   }
 }
 

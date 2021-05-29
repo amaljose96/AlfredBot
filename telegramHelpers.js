@@ -2,11 +2,12 @@ const { default: axios } = require("axios");
 
 const botAccessToken = process.env.BOTTOKEN;
 
-function processGroupAction(group,user,decision)
+function processGroupAction(groupId,user,decision)
 {
     switch(decision){
         case "safe":return;
         case "kick":console.log("User needs to be kicked.");break;
+        case "ban":console.log("User needs to be banned");break;
         case "add":console.log("User will be added");break;
         default:console.log("What do you mean by "+decision);
     }

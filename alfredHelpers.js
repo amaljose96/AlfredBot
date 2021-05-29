@@ -73,6 +73,8 @@ function updateTimesheetAndUsersForNewUser(newUser, users, timeSheet, slots) {
     ...newUser,
     type: "updater",
     score: 10,
+    hits:0,
+    misses:0,
     slots,
   };
 }
@@ -110,6 +112,7 @@ function informTheAdmins(message) {
   sendMessage(adminsGroupId, message);
 }
 
+
 module.exports = {
   loadTimeSheet,
   updateTimesheetAndUsersForNewUser,
@@ -119,15 +122,3 @@ module.exports = {
   checkIfSlotIsTaken,
 };
 
-/**
- * Polyfill since Im using an old version od Node -Amal
- */
-if (!Object.entries)
-  Object.entries = function (obj) {
-    var ownProps = Object.keys(obj),
-      i = ownProps.length,
-      resArray = new Array(i); // preallocate the Array
-
-    while (i--) resArray[i] = [ownProps[i], obj[ownProps[i]]];
-    return resArray;
-  };

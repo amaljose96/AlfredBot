@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 const { printAction } = require("./telegramHelpers");
 const fs = require("fs");
-const { groupUserManagementPipeline } = require("./groupUserManagement");
+const { groupUserManagementPipeline,checkIfPosted } = require("./groupUserManagement");
 const { userManagementPipeline } = require("./userManagementPipeline.js");
 const { mainConversationPipeline } = require("./conversationPipeline");
 const botToken = process.env.BOTTOKEN;
@@ -164,14 +164,17 @@ function startUp() {
     users = usersRead ? usersRead : {};
     timeSheet = timeSheetRead ? timeSheetRead : {};
     console.log("Loaded users and timesheet");
-    setInterval(()=>{
-      syncCache()
-    },2000);
-    setInterval(() => {
-      poller();
-    }, 2000);
     loadTimeSheet().then(retrievedSheet=>{
       googleSheet=retrievedSheet;
+      setInterval(()=>{
+        syncCache()
+      },2000);
+      setInterval(() => {
+        poller();
+      }, 2000);
+      setInterval(()=>{
+        checkIfPosted(users,timeSheet);
+      },30000);
     })
         
     /**
