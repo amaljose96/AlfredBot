@@ -142,10 +142,14 @@ function loadData(filename) {
 function syncCache(){
   console.log("Writing cache");
   fs.writeFile("users.json",JSON.stringify(users),(err)=>{
-    console.log(err);
-  })
+    if(err){
+      console.log(err);
+    }
+  });
   fs.writeFile("timesheet.json",JSON.stringify(timeSheet),(err)=>{
-    console.log(err);
+    if(err){
+      console.log(err);
+    }
   })
 }
 
@@ -171,11 +175,11 @@ function startUp() {
      * We can use the loadTimeSheet function for now, for the dummy data
      * We'll use the sheets api for updating the cells
      */
-    // loadTimeSheet().then((timeSheet) => {
-    //   new SlotBot(timeSheet).startBot();
-    // }).catch(err => {
-    //   console.log(err);
-    // });
+    loadTimeSheet().then((timeSheet) => {
+      new SlotBot(timeSheet).startBot();
+    }).catch(err => {
+      console.log(err);
+    });
 
 
   });

@@ -3,3 +3,4 @@ token.json
 node_modules/
 users.json
 timesheet.json
+.env

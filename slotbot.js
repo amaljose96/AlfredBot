@@ -7,7 +7,7 @@ class SlotBot {
    
     constructor(timeSheet) {
         this.timeSheet = timeSheet;
-        this.BOT_TOKEN= process.env.BOTTOKEN;
+        this.BOT_TOKEN= process.env.TELLERTOKEN;
         this.bot = new Telegraf(this.BOT_TOKEN)
         this.initializeScene();
         const stage = new Scenes.Stage([this.addToGroupScene], { default: "add_to_group" }); // Scene registration
