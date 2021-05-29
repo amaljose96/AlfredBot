@@ -1,10 +1,11 @@
 const { default: axios } = require("axios");
-const {printAction}  = require("./telegramHelpers");
-const {userManagementPipeline} = require("./groupUserManagement");
+const { printAction } = require("./telegramHelpers");
+const fs = require("fs");
+const { userManagementPipeline } = require("./groupUserManagement");
 const { mainConversationPipeline } = require("./conversationPipeline");
 const botToken = process.env.BOTTOKEN;
 let lastUpdate = "";
-let users={};
+let users = {};
 let timeSheet = {};
 
 function poller() {
@@ -66,13 +67,13 @@ function inferAction(update) {
     let group = update["message"].chat;
     let time = update["message"].date;
     base = { ...base, by, group, time };
-    if(update["message"].new_chat_member){
-      if(update["message"].new_chat_member.id === by.id){
+    if (update["message"].new_chat_member) {
+      if (update["message"].new_chat_member.id === by.id) {
         return {
           type: "new_user_joined",
           ...base,
           user: update["message"].new_chat_member,
-        }
+        };
       }
     }
     if (update["message"].new_chat_members) {
@@ -112,22 +113,52 @@ function inferAction(update) {
   return { type: "unknown", update };
 }
 
-
-
 function processUpdate(update) {
   let action = inferAction(update);
-  userManagementPipeline(action,users,timeSheet);
-  mainConversationPipeline(action,users,timeSheet);
+  userManagementPipeline(action, users, timeSheet);
+  mainConversationPipeline(action, users, timeSheet);
   printAction(action);
 }
 
+function loadData(filename) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filename, (e, readData) => {
+      if (e) {
+        console.log(e.message);
+        reject(false);
+        return;
+      }
+      resolve(JSON.parse(readData));
+    });
+  });
+}
 
+function syncCache(){
+  console.log("Writing cache");
+  fs.writeFile("users.json",JSON.stringify(users),(err)=>{
+    console.log(err);
+  })
+  fs.writeFile("timesheet.json",JSON.stringify(timeSheet),(err)=>{
+    console.log(err);
+  })
+}
 
+function startUp() {
+  console.log("Alfred here. My token is", botToken);
+  Promise.all([
+    loadData("users.json").catch(() => {}),
+    loadData("timesheet.json").catch(() => {}),
+  ]).then((usersRead, timeSheetRead) => {
+    users = usersRead ? usersRead : {};
+    timeSheet = timeSheetRead ? usersRead : {};
+    console.log("Loaded users and timesheet");
+    setInterval(()=>{
+      syncCache()
+    },10000);
+    setInterval(() => {
+      poller();
+    }, 2000);
+  });
+}
 
-
-console.log("Alfred here. My token is",botToken)
-setInterval(() => {
-  poller();
-}, 2000);
-
-
+startUp();
