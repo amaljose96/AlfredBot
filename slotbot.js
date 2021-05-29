@@ -5,7 +5,7 @@ const { Telegraf, Markup, Scenes, session } = require('telegraf');
 
 class SlotBot {
 
-    BOT_TOKEN = "1721823782:AAGdUtmEVE6aeJ76PUwK5OplF1id7GWQm_8";
+    BOT_TOKEN = process.env.BOTTOKEN;
     constructor(timeSheet) {
         this.timeSheet = timeSheet;
         this.bot = new Telegraf(this.BOT_TOKEN)
