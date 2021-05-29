@@ -1,3 +1,5 @@
+const { default: axios } = require("axios");
+
 const botAccessToken = process.env.BOTTOKEN;
 
 function processGroupAction(group,user,decision)
@@ -8,7 +10,7 @@ function processGroupAction(group,user,decision)
         default:console.log("What do you mean by "+decision);
     }
 }
-function getUserName(){
+function getUserName(user){
     return `${user.first_name} ${user.last_name}`;
 }
 
@@ -24,7 +26,7 @@ function sendMessage(chatId,message){
     console.log("[TELEGRAM] "+message);
     return axios
       .get(
-        `https://api.telegram.org/bot${botAccessToken}/sendMessage?chat_id=${chatId}&parse_mode=html&text=${message}&disable_notification=true`
+        `https://api.telegram.org/${botAccessToken}/sendMessage?chat_id=${chatId}&parse_mode=html&text=${message}`
       )
       .then((response) => {
         console.log(

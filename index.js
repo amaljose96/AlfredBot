@@ -1,6 +1,7 @@
 const { default: axios } = require("axios");
 const {printAction}  = require("./telegramHelpers");
-const {userManagementPipeline} = require("./groupUserManagement")
+const {userManagementPipeline} = require("./groupUserManagement");
+const { mainConversationPipeline } = require("./conversationPipeline");
 const botToken = process.env.BOTTOKEN;
 let lastUpdate = "";
 let users={};
@@ -116,6 +117,7 @@ function inferAction(update) {
 function processUpdate(update) {
   let action = inferAction(update);
   userManagementPipeline(action,users,timeSheet);
+  mainConversationPipeline(action,users,timeSheet);
   printAction(action);
 }
 
