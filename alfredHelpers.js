@@ -1,4 +1,5 @@
 const { getSheetsHandler, getSheetContent } = require("./sheetsWrapper");
+const { adminsGroupId } = require("./constants");
 const { sendMessage } = require("./telegramHelpers");
 
 const locations = {
@@ -50,9 +51,8 @@ function checkAndUpdateTimesheetForNewUser() {
 
 }
 
-function informTheAdmins(message) {
-  const adminGroup = "-552504204";
-  sendMessage(adminGroup, message);
+function informTheAdmins(message){
+    sendMessage(adminsGroupId,message);
 }
 
 module.exports = {
