@@ -73,8 +73,8 @@ function updateTimesheetAndUsersForNewUser(newUser, users, timeSheet, slots) {
     ...newUser,
     type: "updater",
     score: 10,
-    hits:0,
-    misses:0,
+    hits: 0,
+    misses: 0,
     slots,
   };
 }
@@ -94,8 +94,8 @@ function updateGoogleSheetForUser(user) {
   updateSheet(cellUpdates);
 }
 
-function checkIfSlotIsTaken(time, location, timeSheet, googleSheet) {
-  if (timeSheet[time] && timeSheet[time][location]) {
+function checkIfSlotIsTaken(time, location, timeSheet, googleSheet = {}) {
+  if (timeSheet && timeSheet[time] && timeSheet[time][location]) {
     return true;
   }
   if (

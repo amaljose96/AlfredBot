@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 const { printAction } = require("./telegramHelpers");
 const fs = require("fs");
-const { groupUserManagementPipeline,checkIfPosted } = require("./groupUserManagement");
+const { groupUserManagementPipeline, checkIfPosted } = require("./groupUserManagement");
 const { userManagementPipeline } = require("./userManagementPipeline.js");
 const { mainConversationPipeline } = require("./conversationPipeline");
 const botToken = process.env.BOTTOKEN;
@@ -10,8 +10,9 @@ let users = {};
 let timeSheet = {};
 let googleSheet = {};
 const { loadTimeSheet } = require("./alfredHelpers");
+require('dotenv').config()
 
-const SlotBot = require('./slotbot');
+const AddUserToGroupBot = require('./addUserToGroupBot');
 const { getSheetsHandler, getSheetContent } = require("./sheetsWrapper");
 
 function poller() {
@@ -125,7 +126,7 @@ function processUpdate(update) {
   let action = inferAction(update);
   groupUserManagementPipeline(action, users, timeSheet);
   mainConversationPipeline(action, users, timeSheet);
-  userManagementPipeline(action,users,timeSheet,googleSheet);
+  userManagementPipeline(action, users, timeSheet, googleSheet);
   printAction(action);
 }
 
@@ -142,14 +143,14 @@ function loadData(filename) {
   });
 }
 
-function syncCache(){
-  fs.writeFile("users.json",JSON.stringify(users,null,4),(err)=>{
-    if(err){
+function syncCache() {
+  fs.writeFile("users.json", JSON.stringify(users, null, 4), (err) => {
+    if (err) {
       console.log(err);
     }
   });
-  fs.writeFile("timesheet.json",JSON.stringify(timeSheet,null,4),(err)=>{
-    if(err){
+  fs.writeFile("timesheet.json", JSON.stringify(timeSheet, null, 4), (err) => {
+    if (err) {
       console.log(err);
     }
   })
@@ -158,9 +159,9 @@ function syncCache(){
 function startUp() {
   console.log("Alfred here. My token is", botToken);
   Promise.all([
-    loadData("users.json").catch(() => {}),
-    loadData("timesheet.json").catch(() => {}),
-  ]).then(([usersRead,timeSheetRead]) => {
+    loadData("users.json").catch(() => { }),
+    loadData("timesheet.json").catch(() => { }),
+  ]).then(([usersRead, timeSheetRead]) => {
     users = usersRead ? usersRead : {};
     timeSheet = timeSheetRead ? timeSheetRead : {};
     console.log("Loaded users and timesheet");
@@ -176,20 +177,8 @@ function startUp() {
         checkIfPosted(users,timeSheet);
       },30000);
     })
-        
-    /**
-     * Hey Raman, can we use the timesheet from json for comparison?
-     * The loadTimeSheet wont be needed since the timesheet json would be the source of data
-     * We can use the loadTimeSheet function for now, for the dummy data
-     * We'll use the sheets api for updating the cells
-     */
-    // loadTimeSheet().then((timeSheet) => {
-    //   new SlotBot(timeSheet).startBot();
-    // }).catch(err => {
-    //   console.log(err);
-    // });
 
-
+    new AddUserToGroupBot(timeSheet).startBot();
   });
 }
 
