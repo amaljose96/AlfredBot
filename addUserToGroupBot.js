@@ -1,7 +1,8 @@
 
 const { Telegraf, Markup, Scenes, session } = require('telegraf');
 const moment = require('moment');
-const { checkIfSlotIsTaken } = require('./alfredHelpers');
+const { checkIfSlotIsTaken, updateTimesheetAndUsersForNewUser, updateGoogleSheetForUser } = require('./alfredHelpers');
+const users = require('./index');
 
 class AddUserToGroupBot {
 
@@ -14,13 +15,12 @@ class AddUserToGroupBot {
         this.bot.use(session());
         this.bot.use(stage.middleware());
         this.bot.command('/start', (ctx) => ctx.scene.enter('add_to_group'));
-        this.registerHearHanlders();
+        this.registerHearHandlders();
         this.bot.launch();
 
     }
 
-
-    registerHearHanlders(){
+    registerHearHandlders() {
         this.bot.hears('exit', (ctx) => {
             this.showMessage();
             return ctx.scene.leave();
@@ -54,7 +54,13 @@ class AddUserToGroupBot {
   `);
     }
 
-    saveUser() {
+    saveUser(ctx, location, time) {
+        const user = ctx.message.from;
+        const currentSlots = users[user.id] && users[user.id] && users[user.id][slots] ? users[user.id][slots] : [];
+        currentSlots.push({ location, time });
+        // Will have to implement promise after the api call code is added
+        updateTimesheetAndUsersForNewUser(user, users, this.timeSheet, currentSlots);
+        updateGoogleSheetForUser(users[user.id]);
         // Save to the sheets API
         return Promise.resolve(true);
     }
@@ -90,13 +96,12 @@ class AddUserToGroupBot {
                 const consulate = ctx.message.text.toLowerCase();
                 let selectedTimeSlot = ctx.wizard.state.timeslot;
                 let timeslot = moment(selectedTimeSlot, ["h:mm A"]).format("HH:mm");
-                console.log('Slot ----->', timeslot);
                 // Fix to handle timeslots ending with 00.
                 timeslot = timeslot.split(":")[1] == '00' ? timeslot.slice(0, -1) : timeslot;
                 if (consulate.length == 1 && (consulate == 'h' || consulate == 'm' || consulate == 'c' || consulate == 'd' || consulate == 'k')) {
                     if (!checkIfSlotIsTaken(timeslot, consulate.toUpperCase(), this.timeSheet)) {
-                        this.saveUser().then(res => {
-                            ctx.reply('You have been added to the group 👍. Do go through the pinned messages. Check @f1julydiscussions for doubts. ')
+                        this.saveUser(ctx).then(res => {
+                            ctx.reply('You have been added to the group 👍. Do go through the pinned messages. Check @f1discussionsjunejuly for doubts. ')
                             return ctx.scene.leave();
                         }).catch('Oops! Something went wrong. Please try again');
                     } else {

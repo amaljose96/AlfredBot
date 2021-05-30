@@ -165,21 +165,25 @@ function startUp() {
     users = usersRead ? usersRead : {};
     timeSheet = timeSheetRead ? timeSheetRead : {};
     console.log("Loaded users and timesheet");
-    loadTimeSheet().then(retrievedSheet=>{
-      googleSheet=retrievedSheet;
-      setInterval(()=>{
+    loadTimeSheet().then(retrievedSheet => {
+      googleSheet = retrievedSheet;
+      new AddUserToGroupBot(googleSheet).startBot();
+      setInterval(() => {
         syncCache()
-      },2000);
+      }, 2000);
       setInterval(() => {
         poller();
       }, 2000);
-      setInterval(()=>{
-        checkIfPosted(users,timeSheet);
-      },30000);
+      setInterval(() => {
+        checkIfPosted(users, timeSheet);
+      }, 30000);
     })
 
-    new AddUserToGroupBot(timeSheet).startBot();
   });
 }
 
 startUp();
+
+module.exports = {
+  users
+}
