@@ -2,11 +2,11 @@
 const { Telegraf, Markup, Scenes, session } = require('telegraf');
 const moment = require('moment');
 const { checkIfSlotIsTaken, updateTimesheetAndUsersForNewUser, updateGoogleSheetForUser } = require('./alfredHelpers');
-const users = require('./index');
 
 class AddUserToGroupBot {
 
-    constructor(timeSheet) {
+    constructor(timeSheet, users) {
+        this.users = users;
         this.timeSheet = timeSheet;
         this.BOT_TOKEN = process.env.TELLERTOKEN;
         this.bot = new Telegraf(this.BOT_TOKEN)
@@ -56,11 +56,12 @@ class AddUserToGroupBot {
 
     saveUser(ctx, location, time) {
         const user = ctx.message.from;
-        const currentSlots = users[user.id] && users[user.id] && users[user.id][slots] ? users[user.id][slots] : [];
+        const currentSlots = this.users[user.id] && this.users[user.id] && this.users[user.id]['slots'] ? this.users[user.id]['slots'] : [];
         currentSlots.push({ location, time });
         // Will have to implement promise after the api call code is added
-        updateTimesheetAndUsersForNewUser(user, users, this.timeSheet, currentSlots);
-        updateGoogleSheetForUser(users[user.id]);
+        updateTimesheetAndUsersForNewUser(user, this.users, this.timeSheet, currentSlots);
+        user.slots = currentSlots;
+        updateGoogleSheetForUser(user);
         // Save to the sheets API
         return Promise.resolve(true);
     }
@@ -100,7 +101,7 @@ class AddUserToGroupBot {
                 timeslot = timeslot.split(":")[1] == '00' ? timeslot.slice(0, -1) : timeslot;
                 if (consulate.length == 1 && (consulate == 'h' || consulate == 'm' || consulate == 'c' || consulate == 'd' || consulate == 'k')) {
                     if (!checkIfSlotIsTaken(timeslot, consulate.toUpperCase(), this.timeSheet)) {
-                        this.saveUser(ctx).then(res => {
+                        this.saveUser(ctx, consulate.toUpperCase(), timeslot).then(res => {
                             ctx.reply('You have been added to the group 👍. Do go through the pinned messages. Check @f1discussionsjunejuly for doubts. ')
                             return ctx.scene.leave();
                         }).catch('Oops! Something went wrong. Please try again');

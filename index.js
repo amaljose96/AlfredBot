@@ -167,7 +167,7 @@ function startUp() {
     console.log("Loaded users and timesheet");
     loadTimeSheet().then(retrievedSheet => {
       googleSheet = retrievedSheet;
-      new AddUserToGroupBot(googleSheet).startBot();
+      new AddUserToGroupBot(googleSheet, users).startBot();
       setInterval(() => {
         syncCache()
       }, 2000);
@@ -183,7 +183,3 @@ function startUp() {
 }
 
 startUp();
-
-module.exports = {
-  users
-}
