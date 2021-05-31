@@ -49,7 +49,7 @@ function checkIfPosted(users, timesheet) {
   if (lastChecked !== checkerTime) {
     let peopleWhoHadToUpdate = timesheet[checkerTime];
     if(peopleWhoHadToUpdate){
-      Object.values(peopleWhoHadToUpdate).then((userId) => {
+      Object.values(peopleWhoHadToUpdate).forEach((userId) => {
         if (users[userId].hasUpdated) {
           users[userId].score += 0.5;
           users[userId].hits += 1;

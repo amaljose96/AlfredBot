@@ -28,7 +28,7 @@ function handleGroupUpdate(action, users) {
     (userSlot) => userSlot.time === checkerTime
   );
   if (!matchingSlot) {
-    informTheAdmins(getUserName(updater) + " is spamming");
+    informTheAdmins(getUserName(updater) + " is spamming. Their slots are at "+users[updater.id].slots.map(slot=>slot.time).join(","))+" Current slot is "+checkerTime;
     users[updater.id].score -= 0.1;
   } else {
     users[updater.id].hasUpdated = true;
