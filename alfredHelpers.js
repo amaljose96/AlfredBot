@@ -79,6 +79,13 @@ function updateTimesheetAndUsersForNewUser(newUser, users, timeSheet, slots) {
   };
 }
 
+function updateUserSlots(user, slots) {
+  if (users[user.id]) {
+    users[user.id].slots = slots;
+    updateGoogleSheetForUser(users[user.id]);
+  }
+}
+
 function updateGoogleSheetForUser(user) {
   let cellUpdates = user.slots.map((slot) => {
     let rowNumber =
@@ -120,5 +127,6 @@ module.exports = {
   informTheAdmins,
   getUserSlotInfo,
   checkIfSlotIsTaken,
+  updateUserSlots
 };
 
