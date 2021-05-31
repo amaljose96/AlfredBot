@@ -11,8 +11,8 @@ function processGroupAction(groupId, user, decision) {
     default: console.log("What do you mean by " + decision);
   }
 }
-function getUserName(user) {
-  return `${user.first_name} ${user.last_name | ''}`;
+function getUserName(user){
+    return `${user.first_name?user.first_name:""}${user.last_name?` `+user.last_name:""}`;
 }
 
 function getGroupText(group) {

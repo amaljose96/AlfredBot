@@ -28,8 +28,8 @@ function userManagementPipeline(action, users, timeSheet, googleSheet) {
     } else {
       //If the user does not have a slot, inform the admins.
       informTheAdmins(
-        getUserName(actionser) +
-          " is in the group. But he doest have a slot yet. Do verify if he's a valid user or kick him out."
+        getUserName(actioner) +
+          " is in the group. But he doest have a slot yet. Do verify if they are a valid user or kick them out."
       );
     }
   } else {

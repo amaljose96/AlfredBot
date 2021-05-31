@@ -21,7 +21,7 @@ function loadTimeSheet() {
       let pointerTime = new Date();
       pointerTime.setHours(0);
       pointerTime.setMinutes(0);
-      data.values.forEach((row) => {
+      data.values.slice(1).forEach((row) => {
         let lineData = {};
         Object.keys(locations).forEach((header, index) => {
           lineData[header] = row[index + 2];
@@ -36,6 +36,7 @@ function loadTimeSheet() {
           pointerTime.setMinutes(pointerTime.getMinutes() + 15);
         }
       });
+      console.log(timeSheet)
       return timeSheet;
     });
   });
