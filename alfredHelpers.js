@@ -3,7 +3,7 @@ const {
   getSheetContent,
   updateSheet,
 } = require("./sheetsWrapper");
-const { adminsGroupId, locationColumn } = require("./constants");
+const { adminsGroupId, discussionsGroupId, locationColumn } = require("./constants");
 const { sendMessage, getUserName } = require("./telegramHelpers");
 
 const locations = {
@@ -114,6 +114,11 @@ function informTheAdmins(message) {
 }
 
 
+function informEveryone(message) {
+  sendMessage(discussionsGroupId, message);
+}
+
+
 module.exports = {
   loadTimeSheet,
   updateTimesheetAndUsersForNewUser,
@@ -121,5 +126,6 @@ module.exports = {
   informTheAdmins,
   getUserSlotInfo,
   checkIfSlotIsTaken,
+  informEveryone
 };
 
